@@ -1,0 +1,13 @@
+# All weights/thresholds live here (not hard-coded)
+model: gemini-3.5-flash-lite
+cache_ttl_s: 30
+max_docs: 12
+base: 50
+w_tier: {1: 1.0, 2: 0.7, 3: 0.3}
+pts_support: 18      # per independent supporter weight
+pts_contra: 25       # per contradicting weight
+verdicts: {real: 85, likely_real: 65, unverified: 35, likely_fake: 15}
+sensitive_cap: 64    # sensitive topics: never above Unverified w/o strong evidence
+region: IN
+rate_limit: {per_min: 5, per_day: 60}   # per API key or IP (protects free-tier quotas)
+max_queries: 3   # GNews free tier = 100 req/day -> ~33 claims/day

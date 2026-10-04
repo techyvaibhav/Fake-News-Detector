@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+httpx
+pyyaml
+trafilatura
+pytest
+pytest-asyncio
+feedparser
+python-dotenv

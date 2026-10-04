@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Fake News Detector</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--card:#f4f4f6;--bd:#d8d8de}
+@media(prefers-color-scheme:dark){:root{--bg:#16161a;--fg:#eee;--card:#222228;--bd:#3a3a44}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+textarea,input,button{width:100%;box-sizing:border-box;padding:12px;margin:6px 0;font:inherit;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg)}
+button{background:#2b59ff;color:#fff;border:0;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:12px 0}
+.badge{display:inline-block;padding:6px 12px;border-radius:20px;font-weight:700;color:#fff}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%}
+.src{border-top:1px solid var(--bd);padding:8px 0;font-size:14px;overflow-wrap:anywhere}
+small{opacity:.75}
+</style></head><body><main>
+<h1>Fake News Detector</h1>
+<textarea id="t" rows="4" maxlength="2000" placeholder="Paste a claim / headline (English, Hindi, Hinglish)"></textarea>
+<input id="u" placeholder="or news URL (optional)">
+<button id="go">Check</button>
+<div id="o" role="status" aria-live="polite"></div>
+<p><small>This is an AI-assisted estimate. Verify with the linked primary sources.</small></p>
+<script>
+const V={REAL:["✅ Real","#1a9c4a"],LIKELY_REAL:["🟢 Likely Real","#4aa31a"],UNVERIFIED:["🟡 Unverified","#b8921a"],
+LIKELY_FAKE:["🟠 Likely Fake","#d97a1a"],FAKE:["🔴 Fake","#c62828"],RUMOUR:["❌ NO – This is a rumour","#7a1a1a"],NOT_VERIFIABLE:["Not verifiable","#666"]};
+const G={govt:"Government / official",wire:"Government / official",news:"News",factcheck:"Fact-checkers",other:"Others (unverified)"};
+const e=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function fb(ok){
+ const c=ok?null:prompt("Kya galat tha? (optional)");
+ const r=await fetch("/api/v1/feedback",{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({request_id:window.RID,is_correct:ok,comment:c})});
+ fm.textContent=r.ok?"Thanks! Feedback saved.":"Could not save feedback."}
+go.onclick=async()=>{
+ o.innerHTML='<div class="card">Extracting claim → Searching sources → Analysing → Scoring…</div>';go.disabled=true;
+ try{
+  const r=await fetch("/api/v1/verify",{method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({text:t.value||null,url:u.value||null})});
+  const d=await r.json(); if(!r.ok||d.error){o.innerHTML='<div class="card">'+e(d.error||d.detail)+'</div>';return}
+  const [lb,cl]=V[d.verdict]||[d.verdict,"#666"];
+  let h=`<div class="card"><span class="badge" style="background:${cl}">${lb}</span>`;
+  if(d.score!=null)h+=`<p>Score: <b>${d.score}%</b> · Confidence: ${e(d.confidence)}</p><div class="bar"><i style="width:${d.score}%;background:${cl}"></i></div>`;
+  h+=`<p>${e(d.explanation)}</p>`;
+  if(d.first_reported)h+=`<p><b>First reported by:</b> <a target="_blank" rel="noopener" href="${e(d.first_reported.url)}">${e(d.first_reported.source)}</a> <small>${e(d.first_reported.published_at)}</small></p>`;
+  if(d.recorded_by)h+=`<p><b>Recorded by:</b> ${e(d.recorded_by.name||d.recorded_by.note)}</p>`;
+  h+="</div>";
+  const ss=d.sources||[];
+  if(!ss.length)h+='<div class="card">No source links found.</div>';
+  for(const g of [...new Set(ss.map(s=>G[s.type]))]){
+   h+=`<div class="card"><b>${g}</b>`;
+   for(const s of ss.filter(s=>G[s.type]==g))
+    h+=`<div class="src"><a target="_blank" rel="noopener" href="${e(s.url)}">${e(s.headline)}</a><br><small>${e(s.name)} · Tier ${s.tier} · ${e(s.stance)} · ${e(s.published_at||"")}</small></div>`;
+   h+="</div>";}
+  h+=`<div class="card"><small>Result sahi laga?</small><br><button style="width:auto" onclick="fb(true)">👍 Sahi</button> <button style="width:auto;background:#c62828" onclick="fb(false)">👎 Galat</button><div id="fm"></div></div>`;
+  window.RID=d.request_id; o.innerHTML=h;
+ }catch(x){o.innerHTML='<div class="card">Error: '+e(x.message)+'</div>'}
+ go.disabled=false};
+</script></main></body></html>
