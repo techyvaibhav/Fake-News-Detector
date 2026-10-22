@@ -1,56 +1,91 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Fake News Detector</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fake News Detector</title>
+<meta name="description" content="Check forwarded messages, headlines and claims before you share them.">
 <style>
-:root{--bg:#fff;--fg:#1a1a1a;--card:#f4f4f6;--bd:#d8d8de}
-@media(prefers-color-scheme:dark){:root{--bg:#16161a;--fg:#eee;--card:#222228;--bd:#3a3a44}}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:16px}
-textarea,input,button{width:100%;box-sizing:border-box;padding:12px;margin:6px 0;font:inherit;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg)}
-button{background:#2b59ff;color:#fff;border:0;cursor:pointer}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:12px 0}
+:root{--bg:#fff;--fg:#1a1a1a;--card:#f4f4f6;--bd:#d8d8de;--mut:#5f6368;--ac:#2b59ff}
+@media(prefers-color-scheme:dark){:root{--bg:#16161a;--fg:#eee;--card:#222228;--bd:#3a3a44;--mut:#a0a4ab;--ac:#6b8cff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}h1{margin:.3em 0 0}.sub{margin:.2em 0 1em;color:var(--mut)}
+label{display:block;font-weight:600;margin-top:10px}
+textarea,input{width:100%;padding:12px;margin:6px 0;font:inherit;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg)}
+button{padding:12px 16px;font:inherit;border:0;border-radius:8px;background:var(--ac);color:#fff;cursor:pointer}
+#go{width:100%;margin-top:6px}button:disabled{opacity:.6;cursor:wait}button.sec{background:var(--card);color:var(--fg);border:1px solid var(--bd);padding:9px 12px}
+button.bad{background:#c62828}a{color:var(--ac)}:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:12px 0}.err{border-color:#c62828}
 .badge{display:inline-block;padding:6px 12px;border-radius:20px;font-weight:700;color:#fff}
-.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%}
-.src{border-top:1px solid var(--bd);padding:8px 0;font-size:14px;overflow-wrap:anywhere}
-small{opacity:.75}
+.chip{display:inline-block;padding:3px 9px;margin:2px 4px 2px 0;border-radius:12px;font-size:13px;background:#fff3cd;color:#5c4400;border:1px solid #e6c94a}
+.alert{border-left:5px solid var(--ac);padding:8px 12px;margin:10px 0;background:var(--bg);font-weight:600}
+.src,.cl{border-top:1px solid var(--bd);padding:8px 0;font-size:14px;overflow-wrap:anywhere}small,.mut{color:var(--mut)}
+.row{display:flex;flex-wrap:wrap;gap:8px}.tier{font-size:11px;border:1px solid var(--bd);border-radius:6px;padding:0 5px;margin-right:4px}
 </style></head><body><main>
 <h1>Fake News Detector</h1>
-<textarea id="t" rows="4" maxlength="2000" placeholder="Paste a claim / headline (English, Hindi, Hinglish)"></textarea>
-<input id="u" placeholder="or news URL (optional)">
-<button id="go">Check</button>
+<p class="sub">Forward karne se pehle check karo &middot; English / हिंदी / Hinglish</p>
+<label for="t">Claim, headline or forwarded message</label>
+<textarea id="t" rows="5" maxlength="2000" placeholder="Paste the message here..."></textarea>
+<small id="cnt" class="mut">0 / 2000</small>
+<label for="u">News link (optional)</label>
+<input id="u" type="url" inputmode="url" placeholder="https://...">
+<button id="go" type="button">Check</button>
 <div id="o" role="status" aria-live="polite"></div>
-<p><small>This is an AI-assisted estimate. Verify with the linked primary sources.</small></p>
+<p><small>This is an AI-assisted estimate. Verify with the linked sources.</small></p>
 <script>
-const V={REAL:["✅ Real","#1a9c4a"],LIKELY_REAL:["🟢 Likely Real","#4aa31a"],UNVERIFIED:["🟡 Unverified","#b8921a"],
-LIKELY_FAKE:["🟠 Likely Fake","#d97a1a"],FAKE:["🔴 Fake","#c62828"],RUMOUR:["❌ NO – This is a rumour","#7a1a1a"],NOT_VERIFIABLE:["Not verifiable","#666"]};
-const G={govt:"Government / official",wire:"Government / official",news:"News",factcheck:"Fact-checkers",other:"Others (unverified)"};
-const e=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-async function fb(ok){
- const c=ok?null:prompt("Kya galat tha? (optional)");
- const r=await fetch("/api/v1/feedback",{method:"POST",headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({request_id:window.RID,is_correct:ok,comment:c})});
- fm.textContent=r.ok?"Thanks! Feedback saved.":"Could not save feedback."}
-go.onclick=async()=>{
- o.innerHTML='<div class="card">Extracting claim → Searching sources → Analysing → Scoring…</div>';go.disabled=true;
- try{
-  const r=await fetch("/api/v1/verify",{method:"POST",headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({text:t.value||null,url:u.value||null})});
-  const d=await r.json(); if(!r.ok||d.error){o.innerHTML='<div class="card">'+e(d.error||d.detail)+'</div>';return}
-  const [lb,cl]=V[d.verdict]||[d.verdict,"#666"];
-  let h=`<div class="card"><span class="badge" style="background:${cl}">${lb}</span>`;
-  if(d.score!=null)h+=`<p>Score: <b>${d.score}%</b> · Confidence: ${e(d.confidence)}</p><div class="bar"><i style="width:${d.score}%;background:${cl}"></i></div>`;
-  h+=`<p>${e(d.explanation)}</p>`;
-  if(d.first_reported)h+=`<p><b>First reported by:</b> <a target="_blank" rel="noopener" href="${e(d.first_reported.url)}">${e(d.first_reported.source)}</a> <small>${e(d.first_reported.published_at)}</small></p>`;
-  if(d.recorded_by)h+=`<p><b>Recorded by:</b> ${e(d.recorded_by.name||d.recorded_by.note)}</p>`;
-  h+="</div>";
-  const ss=d.sources||[];
-  if(!ss.length)h+='<div class="card">No source links found.</div>';
-  for(const g of [...new Set(ss.map(s=>G[s.type]))]){
-   h+=`<div class="card"><b>${g}</b>`;
-   for(const s of ss.filter(s=>G[s.type]==g))
-    h+=`<div class="src"><a target="_blank" rel="noopener" href="${e(s.url)}">${e(s.headline)}</a><br><small>${e(s.name)} · Tier ${s.tier} · ${e(s.stance)} · ${e(s.published_at||"")}</small></div>`;
-   h+="</div>";}
-  h+=`<div class="card"><small>Result sahi laga?</small><br><button style="width:auto" onclick="fb(true)">👍 Sahi</button> <button style="width:auto;background:#c62828" onclick="fb(false)">👎 Galat</button><div id="fm"></div></div>`;
-  window.RID=d.request_id; o.innerHTML=h;
- }catch(x){o.innerHTML='<div class="card">Error: '+e(x.message)+'</div>'}
- go.disabled=false};
+"use strict";
+const $=id=>document.getElementById(id);
+const el=(tag,at={},...kids)=>{const n=document.createElement(tag);
+ for(const[k,v]of Object.entries(at)){if(k==="class")n.className=v;else if(k.startsWith("on"))n[k]=v;else n.setAttribute(k,v)}
+ for(const c of kids.flat())if(c!=null&&c!==false)n.append(c.nodeType?c:document.createTextNode(String(c)));return n};
+const V={TRUE:["✅ True","#1a8f45"],FALSE:["🔴 False","#c62828"],MISLEADING:["🟠 Misleading","#b85c00"],PARTLY_TRUE:["🟡 Partly true","#8a6d00"],UNVERIFIED:["⚪ Unverified","#5f6368"]};
+const W={single_outlet:"Only one outlet found (sirf ek source)",old_news:"Old news shared as new (purani khabar)",no_source:"Message names no source (source nahi diya)",no_date:"No date given (date nahi di)",no_live_search:"Live search unavailable (live search band hai)"};
+const OR={grounding:"Google Search",factcheck:"Fact-checker",news:"News"};
+const TY={govt:"Official",wire:"News agency",factcheck:"Fact-checker",news:"News",other:"Other"};
+const STEPS=["Reading the claim…","Searching Google & fact-checkers…","Comparing sources…","Writing the verdict…"];
+const okUrl=u=>/^https?:\/\//i.test(u||"");
+const show=(...n)=>$("o").replaceChildren(...n);
+t.oninput=()=>{$("cnt").textContent=t.value.length+" / 2000"};
+async function api(path,opts){const ac=new AbortController(),to=setTimeout(()=>ac.abort(),90000);
+ try{const r=await fetch(path,{...opts,signal:ac.signal});let d={};try{d=await r.json()}catch{}
+  if(!r.ok)throw new Error(typeof d.detail==="string"?d.detail:(d.error||(r.status===422?"Please send between 1 and 2000 characters.":"Error "+r.status)));return d}
+ catch(e){throw e.name==="AbortError"?new Error("Taking too long. Please try again."):e}finally{clearTimeout(to)}}
+async function copy(s){try{await navigator.clipboard.writeText(s);return true}catch{const a=el("textarea");a.value=s;document.body.append(a);a.select();let ok=false;try{ok=document.execCommand("copy")}catch{}a.remove();return ok}}
+const shareUrl=d=>location.origin+location.pathname+"?r="+d.request_id;
+const report=d=>["Fake News Detector: "+V[d.verdict][0]+" ("+d.confidence+" confidence)","Claim: "+d.claim,d.explanation,d.advice?"Next: "+d.advice:"",
+ ...(d.sources||[]).filter(s=>okUrl(s.url)).map(s=>"- "+s.title+" "+s.url),"Search: "+d.google_search_url,"Result: "+shareUrl(d),d.disclaimer].filter(Boolean).join("\n");
+function btn(label,fn,cls="sec"){const b=el("button",{type:"button",class:cls},label);b.onclick=async()=>{const old=b.textContent;const r=await fn();if(typeof r==="string"){b.textContent=r;setTimeout(()=>b.textContent=old,1800)}};return b}
+async function fb(good,box){const c=good?null:prompt("Kya galat tha? (optional)");
+ try{await api("/api/v1/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({request_id:window.RID,is_correct:good,comment:c})});box.textContent="Thanks! Feedback saved."}catch(e){box.textContent="Could not save feedback."}}
+function render(d,shared){
+ const [lb,cl]=V[d.verdict]||[d.verdict,"#5f6368"]; window.RID=d.request_id;
+ const main=el("div",{class:"card"},el("span",{class:"badge",style:"background:"+cl},lb),
+  el("p",{},el("b",{},"Confidence: "),d.confidence,el("br"),el("small",{},d.basis_label,d.provider_label?" · via "+d.provider_label:"",d.cached?" · cached":"")),
+  (d.warnings||[]).filter(w=>W[w]).length?el("p",{},d.warnings.filter(w=>W[w]).map(w=>el("span",{class:"chip"},"⚠ "+W[w]))):null,
+  el("p",{},d.explanation),d.advice?el("div",{class:"alert"},"👉 "+d.advice):null,
+  d.first_reported?el("p",{},el("small",{},"Earliest report found: ",okUrl(d.first_reported.url)?el("a",{href:d.first_reported.url,target:"_blank",rel:"noopener noreferrer"},d.first_reported.source):d.first_reported.source," · ",d.first_reported.published_at)):null,
+  shared?el("p",{},el("small",{},"Shared result · checked "+(d.created_at||""))):null);
+ const cs=d.claims||[];
+ const claims=cs.length>1?el("div",{class:"card"},el("b",{},"Claims in this message"),cs.map(c=>el("div",{class:"cl"},(V[c.verdict]||[c.verdict])[0]+" — "+c.claim,c.note?el("br"):null,c.note?el("small",{},c.note):null))):null;
+ const ss=(d.sources||[]).filter(s=>okUrl(s.url));
+ const links=el("div",{class:"card"},el("b",{},"Links"),
+  ss.length?null:el("p",{},el("small",{},"No source links found - the verdict above is from AI knowledge. Verify it yourself:")),
+  ss.map(s=>el("div",{class:"src"},el("a",{href:s.url,target:"_blank",rel:"noopener noreferrer"},s.title),el("br"),
+   el("small",{},s.title===s.publisher?"":s.publisher+" · ",s.tier?el("span",{class:"tier"},"Tier "+s.tier):null,(OR[s.origin]||"")+(s.type&&s.origin!=="grounding"?" · "+(TY[s.type]||""):""),s.published_at?" · "+s.published_at:""))),
+  el("div",{class:"src"},el("a",{href:d.google_search_url,target:"_blank",rel:"noopener noreferrer"},"🔍 Search on Google")));
+ const wa="https://wa.me/?text="+encodeURIComponent((V[d.verdict]||[d.verdict])[0]+" - "+d.claim+"\n"+(d.advice||"")+"\n"+shareUrl(d));
+ const act=el("div",{class:"card"},el("div",{class:"row"},
+  btn("🔗 Copy link",async()=>(await copy(shareUrl(d)))?"Copied!":"Copy failed"),
+  btn("📋 Copy report",async()=>(await copy(report(d)))?"Copied!":"Copy failed"),
+  el("a",{href:wa,target:"_blank",rel:"noopener noreferrer"},el("button",{type:"button",class:"sec"},"WhatsApp"))));
+ const fm=el("span",{class:"mut"});
+ const fbk=el("div",{class:"card"},el("small",{},"Result sahi laga? "),el("div",{class:"row"},btn("👍 Sahi",()=>fb(true,fm)),btn("👎 Galat",()=>fb(false,fm),"bad")),fm);
+ show(...[main,claims,links,act,fbk].filter(Boolean));
+}
+$("go").onclick=async()=>{
+ const text=t.value.trim(),url=u.value.trim();
+ if(!text&&!url){show(el("div",{class:"card err"},"Please paste a claim or a link first."));return}
+ $("go").disabled=true;let i=0;const box=el("div",{class:"card"},STEPS[0]);show(box);
+ const tm=setInterval(()=>{i=Math.min(i+1,STEPS.length-1);box.textContent=STEPS[i]},4000);
+ try{render(await api("/api/v1/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:text||null,url:url||null})}),false)}
+ catch(e){show(el("div",{class:"card err"},e.message))}finally{clearInterval(tm);$("go").disabled=false}};
+const rid=new URLSearchParams(location.search).get("r");
+if(rid)api("/api/v1/result/"+encodeURIComponent(rid)).then(d=>render(d,true)).catch(e=>show(el("div",{class:"card err"},e.message)));
 </script></main></body></html>

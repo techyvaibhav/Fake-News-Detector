@@ -1,13 +1,11 @@
-# All weights/thresholds live here (not hard-coded)
-model: gemini-3.5-flash-lite
-cache_ttl_s: 30
-max_docs: 12
-base: 50
-w_tier: {1: 1.0, 2: 0.7, 3: 0.3}
-pts_support: 18      # per independent supporter weight
-pts_contra: 25       # per contradicting weight
-verdicts: {real: 85, likely_real: 65, unverified: 35, likely_fake: 15}
-sensitive_cap: 64    # sensitive topics: never above Unverified w/o strong evidence
+model: gemini-3.8-flash                 # chain step 1: Gemini + Google Search grounding
+plain_model: gemini-3.5-flash-lite      # chain step 2: plain Gemini (no search)
+groq_models: [openai/gpt-oss-120b, openai/gpt-oss-20b, qwen/qwen3.8-27b]   # step 3, tried in order (Groq's llama models were shut down 16 Aug 2026)
 region: IN
-rate_limit: {per_min: 5, per_day: 60}   # per API key or IP (protects free-tier quotas)
-max_queries: 3   # GNews free tier = 100 req/day -> ~33 claims/day
+max_links: 5
+cache_hours: {search: 24, fallback: 1, stale: 0.1}  # grounded 24h; fallback 1h; 'live search unavailable' answers only ~6 min so a real answer replaces them fast
+result_days: 30                         # how long shared result links live
+rate_limit:                             # per minute / per day
+  public: {per_min: 6, per_day: 80}     # website visitors (per IP)
+  key:    {per_min: 30, per_day: 3000}  # API clients sending x-api-key
+  view:   {per_min: 60, per_day: 2000}  # opening shared result links

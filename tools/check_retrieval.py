@@ -3,6 +3,8 @@
    python tools/check_retrieval.py --claim "GST was launched in India in 2001"   # claim -> keywords"""
 import asyncio, sys, logging
 from pathlib import Path
+try: sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # Windows console
+except Exception: pass
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dotenv import load_dotenv; load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 import httpx
