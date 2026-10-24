@@ -1,0 +1,61 @@
+id,claim,label,source_url,source_hint,status,synthetic,note
+c001,Chandrayaan-3's lander touched down near the Moon's south pole region on 23 August 2023.,true,https://en.wikipedia.org/wiki/Chandrayaan-3,ISRO,unverified,0,
+c002,"ISRO launched Aditya-L1, India's first solar observatory mission, in September 2023.",true,https://en.wikipedia.org/wiki/Aditya-L1,ISRO,unverified,0,
+c003,India hosted the G20 Leaders' Summit in New Delhi in September 2023.,true,https://en.wikipedia.org/wiki/2023_G20_New_Delhi_summit,PIB / MEA,unverified,0,
+c004,Parliament passed the Women's Reservation Bill (Nari Shakti Vandan Adhiniyam) in September 2023.,true,,PIB / PRS,unverified,0,
+c005,The new Parliament building in New Delhi was inaugurated on 28 May 2023.,true,,PIB,unverified,0,
+c006,Droupadi Murmu was sworn in as India's 15th President in July 2022.,true,,PIB,unverified,0,
+c007,The Supreme Court struck down the electoral bonds scheme as unconstitutional in February 2024.,true,https://en.wikipedia.org/wiki/Electoral_bonds_in_India,SC judgment / news,unverified,0,
+c008,The Pran Pratishtha ceremony at the Ram Mandir in Ayodhya took place on 22 January 2024.,true,,PIB,unverified,0,
+c009,The Bharatiya Nyaya Sanhita replaced the Indian Penal Code from 1 July 2024.,true,,PIB / MHA,unverified,0,
+c010,India won the ICC Men's T20 World Cup 2024 final against South Africa.,true,https://en.wikipedia.org/wiki/2024_ICC_Men%27s_T20_World_Cup,ICC,unverified,0,
+c011,Neeraj Chopra won the Olympic gold medal in javelin at the Tokyo Games.,true,https://en.wikipedia.org/wiki/Neeraj_Chopra,Olympics.com,unverified,0,
+c012,WHO declared COVID-19 a pandemic in March 2020.,true,,WHO,unverified,0,
+c013,The demonetisation of Rs 500 and Rs 1000 notes was announced on 8 November 2016.,true,https://en.wikipedia.org/wiki/2016_Indian_banknote_demonetisation,RBI / PIB,unverified,0,
+c014,GST was rolled out across India on 1 July 2017.,true,https://en.wikipedia.org/wiki/Goods_and_Services_Tax_(India),PIB,unverified,0,
+c015,The RBI announced the withdrawal of Rs 2000 banknotes from circulation in May 2023.,true,,RBI,unverified,0,
+c016,Article 370 was revoked for Jammu and Kashmir in August 2019.,true,https://en.wikipedia.org/wiki/Revocation_of_the_special_status_of_Jammu_and_Kashmir,PIB,unverified,0,
+c017,The first Vande Bharat Express service started in February 2019 between Delhi and Varanasi.,true,https://en.wikipedia.org/wiki/Vande_Bharat_Express,Indian Railways / PIB,unverified,0,
+c018,Parliament passed the Digital Personal Data Protection Act in August 2023.,true,,PIB / MeitY,unverified,0,
+c019,UPI is operated by the National Payments Corporation of India (NPCI).,true,https://en.wikipedia.org/wiki/Unified_Payments_Interface,NPCI,unverified,0,
+c020,ISRO launched the Mars Orbiter Mission (Mangalyaan) in November 2013.,true,https://en.wikipedia.org/wiki/Mars_Orbiter_Mission,ISRO,unverified,0,
+c021,The new Rs 2000 note has a GPS nano-chip that tracks it even underground.,false,,Fact-checkers 2016 (find exact link),unverified,0,
+c022,UNESCO declared Jana Gana Mana the world's best national anthem.,false,,Fact-checkers (find exact link),unverified,0,
+c023,A NASA photo shows India lit up during Diwali night.,misleading,,Fact-checkers: composite/old image (find link),unverified,0,
+c024,5G towers spread the coronavirus.,false,https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters,WHO myth-busters,unverified,0,
+c025,Drinking hot water or gargling with salt water kills the coronavirus.,false,https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters,WHO myth-busters,unverified,0,
+c026,Cow urine cures COVID-19.,false,,WHO / ICMR / fact-checkers (find link),unverified,0,
+c027,Eating garlic protects you from the coronavirus.,false,https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters,WHO myth-busters,unverified,0,
+c028,COVID-19 vaccines contain microchips for tracking people.,false,,WHO / fact-checkers (find link),unverified,0,
+c029,WhatsApp group admins can be arrested for anything posted by group members.,false,,PIB / Alt News (find link),unverified,0,Courts have held admins not liable for members' posts - confirm
+c030,The government is giving free laptops to students under a 'PM Free Laptop Yojana'.,false,,PIB Fact Check (find link),unverified,0,Recurring hoax - confirm exact scheme name
+c031,NASA has confirmed six days of total darkness on Earth in December.,false,,NASA / Snopes (find link),unverified,0,
+c032,Plastic rice is being widely sold in Indian markets.,false,,FSSAI / fact-checkers (find link),unverified,0,
+c033,WhatsApp will start charging users a monthly fee.,false,,Fact-checkers (find link),unverified,0,Recurring hoax
+c034,Three blue ticks on WhatsApp mean the government has taken screenshots of your message.,false,,PIB Fact Check (find link),unverified,0,
+c035,Wearing a face mask for long periods causes carbon dioxide poisoning.,false,https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters,WHO myth-busters,unverified,0,
+c036,Hot weather or summer temperatures kill the coronavirus.,false,https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public/myth-busters,WHO myth-busters,unverified,0,
+c037,Taking high-dose vitamin C cures COVID-19.,misleading,,WHO / fact-checkers (find link),unverified,0,
+c038,Drinking cold water after meals causes heart attacks.,misleading,,Fact-checkers (find link),unverified,0,
+c039,Using a microwave oven causes cancer.,false,,WHO / fact-checkers (find link),unverified,0,
+c040,The Great Wall of China is visible to the naked eye from space.,false,https://en.wikipedia.org/wiki/Great_Wall_of_China,NASA,unverified,0,
+c041,The government will ban all UPI payments above Rs 500 from next month.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c042,RBI will stop printing Rs 500 notes from next week.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c043,All ATMs in India will remain shut for 3 days next week.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c044,"The PMO is distributing free 5G SIM cards to every household, claim yours here.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c045,"Petrol will cost Rs 30 per litre from tomorrow, announced the Finance Ministry.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c046,"All schools in Delhi will be closed for 15 days due to a new virus outbreak, says a WhatsApp forward.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c047,Indian Railways will stop all passenger trains for one week starting Monday.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c048,Aadhaar cards will be deactivated for anyone who has not updated their photo this month.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c049,"A huge meteor will hit Mumbai tonight, ISRO sources say.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c050,"The government will give Rs 5,000 to every citizen who forwards this message to 10 groups.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c051,"All bank accounts with balance under Rs 50,000 will be frozen from tomorrow.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c052,Amazon and Flipkart will be banned in India from next week.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c053,"Electricity bills of all households will be waived for 6 months, announced the PM yesterday.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c054,Mobile numbers containing the digit 8 will be blocked from Friday.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c055,The government has secretly decided to bring back Rs 1000 notes tomorrow.,rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c056,"Every Indian citizen above 60 will get a free car under a new scheme, apply via this link.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c057,"Kal se sabhi ATM 3 din ke liye band rahenge, sarkar ka naya order aaya hai.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c058,"Sarkar har ghar ko 6 mahine ka free gas cylinder degi, ye message 10 logon ko forward karo.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c059,"Aaj raat 12 baje se saare Paytm aur PhonePe account band ho jayenge, RBI ne kaha.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected
+c060,"Delhi mein 10 din ke liye paani ki supply band, Yamuna mein zeher mila hai, aisa forward aa raha hai.",rumour,,synthetic,unverified,1,Synthetic rumour - no real source expected

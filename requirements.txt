@@ -1,0 +1,6 @@
+fastapi==0.156.3
+uvicorn==0.54.0
+httpx==0.28.1
+pyyaml==6.0.3
+python-dotenv==1.2.2
+trafilatura==2.3.1
